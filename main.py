@@ -5,7 +5,6 @@ from typing import List
 
 app = FastAPI()
 
-# Enable CORS for all origins and methods
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,10 +12,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load marks data from file
+# Load marks data (list of dicts)
 with open("marks.json") as f:
-    marks_data = json.load(f)
+    marks_list = json.load(f)
+
+# Build a name->marks dictionary for fast lookup
+marks_data = {entry["name"]: entry["marks"] for entry in marks_list}
 
 @app.get("/api")
 def get_marks(name: List[str] = Query(...)):
-    return [marks_data.get(n, None) for n in name]
+    return {"marks": [marks_data.get(n, None) for n in name]}
