@@ -19,4 +19,4 @@ with open("marks.json") as f:
 
 @app.get("/api")
 def get_marks(name: List[str] = Query(...)):
-    return {"marks": [marks_data.get(n, None) for n in name]}
+    return [marks_data.get(n, None) for n in name]
